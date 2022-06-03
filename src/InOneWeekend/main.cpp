@@ -6,15 +6,16 @@
 double hit_sphere(const point3& center, double radius, const Ray& r)
 {
     vec3 oc = r.GetOrigin() - center;
-    auto a =  dot(r.GetDirection(), r.GetDirection());
-    auto b = 2.0 * dot(oc, r.GetDirection());
-    auto c = dot(oc, oc) - radius*radius;
-    auto disc = b*b - 4*a*c;
+    auto a = r.GetDirection().length_squared();
+    auto halfB = dot(oc, r.GetDirection());
+    auto c = oc.length_squared() - radius * radius;
+    auto disc = halfB * halfB - a * c;
+
     if(disc < 0)
     {
         return -1.0;
     }
-    return  (-b - sqrt(disc)) / (2.0 * a); 
+    return  (-halfB - sqrt(disc)) / a; 
 }
 
 color ray_color(const Ray& ray)
