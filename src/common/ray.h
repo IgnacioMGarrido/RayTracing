@@ -15,7 +15,7 @@ public:
     point3 GetOrigin() const { return m_origin; }
     vec3 GetDirection() const { return m_dir; }
 
-    point3 At(double t){ return m_origin + t * m_dir; }
+    point3 At(double t) const { return m_origin + t * m_dir; }
 private:
     point3 m_origin;
     vec3 m_dir;

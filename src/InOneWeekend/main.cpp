@@ -3,24 +3,30 @@
 #include "vec3.h"
 #include <iostream>
 
-bool hit_sphere(const point3& center, double radius, const Ray& r)
+double hit_sphere(const point3& center, double radius, const Ray& r)
 {
     vec3 oc = r.GetOrigin() - center;
     auto a =  dot(r.GetDirection(), r.GetDirection());
     auto b = 2.0 * dot(oc, r.GetDirection());
     auto c = dot(oc, oc) - radius*radius;
     auto disc = b*b - 4*a*c;
-    return (disc > 0);
+    if(disc < 0)
+    {
+        return -1.0;
+    }
+    return  (-b - sqrt(disc)) / (2.0 * a); 
 }
 
 color ray_color(const Ray& ray)
 {
-    if(hit_sphere(point3(0,0,-1), 0.5, ray))
+    auto t = hit_sphere(point3(0,0,-1), 0.5, ray);
+    if(t > 0.0)
     {
-        return color(1, 0, 0);
+        vec3 N = unit_vector(ray.At(t) - vec3(0,0,-1));
+        return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
     }
     vec3 unitDirection = unit_vector(ray.GetDirection());
-    auto t = 0.5*(unitDirection.y() + 1.0);
+    t = 0.5*(unitDirection.y() + 1.0);
     return (1.0-t) * color(1.0,1.0,1.0) + t*color(0.5,0.7,1.0);
 }
 
