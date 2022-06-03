@@ -14,6 +14,7 @@
 #include <cmath>
 #include <iostream>
 
+#include "rtweekend.h"
 using std::sqrt;
 using std::fabs;
 
