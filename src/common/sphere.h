@@ -38,7 +38,7 @@ class Sphere : public HittableObject
 
             rec.t = root;
             rec.p = r.At(rec.t);
-            rec.normal = (rec.p - m_centre) / m_radius;
+            //rec.normal = (rec.p - m_centre) / m_radius;
             vec3 outwardNormal = (rec.p - m_centre) / m_radius;
             rec.setFaceNormal(r, outwardNormal);
             rec.material = m_material;
