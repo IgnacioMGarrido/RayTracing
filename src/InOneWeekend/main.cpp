@@ -14,7 +14,7 @@ color ray_color(const Ray& ray, const HittableObject& world, int depth)
         return color(0,0,0);
     }
 
-    if(world.Hit(ray, 0, infinity, record))
+    if(world.Hit(ray, 0.001, infinity, record))
     {
         point3 target = record.p + record.normal + random_in_unit_sphere();
         return 0.5 * ray_color(Ray(record.p, target - record.p), world, depth - 1);
