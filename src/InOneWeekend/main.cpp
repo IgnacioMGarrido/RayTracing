@@ -6,12 +6,18 @@
 
 #include <iostream>
 
-color ray_color(const Ray& ray, const HittableObject& world)
+color ray_color(const Ray& ray, const HittableObject& world, int depth)
 {
     HitRecord record{};
+    if(depth <= 0)
+    {
+        return color(0,0,0);
+    }
+
     if(world.Hit(ray, 0, infinity, record))
     {
-        return 0.5 * (record.normal + color(1,1,1));
+        point3 target = record.p + record.normal + random_in_unit_sphere();
+        return 0.5 * ray_color(Ray(record.p, target - record.p), world, depth - 1);
     }
 
     vec3 unitDir = unit_vector(ray.GetDirection());
@@ -27,6 +33,7 @@ int main() {
     const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     const int samples_per_pixel = 100;
+    const int max_depth = 50;
 
     // World
     HittableList world;
@@ -50,7 +57,7 @@ int main() {
                 auto v = (j + random_double()) / (image_height - 1);
 
                 Ray r = cam.get_ray(u,v);
-                pixelColor += ray_color(r, world);
+                pixelColor += ray_color(r, world, max_depth);
             }
             write_color(std::cout, pixelColor, samples_per_pixel);
         }
