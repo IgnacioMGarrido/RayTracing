@@ -3,6 +3,7 @@
 #include "color.h"
 #include "hittableList.h"
 #include "sphere.h"
+#include "material.h"
 
 #include <iostream>
 
@@ -16,8 +17,13 @@ color ray_color(const Ray& ray, const HittableObject& world, int depth)
 
     if(world.Hit(ray, 0.001, infinity, record))
     {
-        point3 target = record.p + record.normal + random_in_unit_sphere();
-        return 0.5 * ray_color(Ray(record.p, target - record.p), world, depth - 1);
+        Ray scattered;
+        color attenuation;
+        if(record.material->Scatter(ray, record, attenuation, scattered))
+        {
+            return attenuation * ray_color(scattered, world, depth-1);
+        }
+        return color(0,0,0);
     }
 
     vec3 unitDir = unit_vector(ray.GetDirection());
@@ -37,8 +43,16 @@ int main() {
 
     // World
     HittableList world;
-    world.Add(std::make_shared<Sphere>(point3(0,0,-1), 0.5));
-    world.Add(std::make_shared<Sphere>(point3(0,-100.5,-1), 100));
+    auto material_ground = make_shared<Lambertian>(color(0.8, 0.8, 0.0));
+    auto material_center = make_shared<Lambertian>(color(0.7, 0.3, 0.3));
+    auto material_left   = make_shared<Metal>(color(0.8, 0.8, 0.8));
+    auto material_right  = make_shared<Metal>(color(0.8, 0.6, 0.2));
+
+    world.Add(make_shared<Sphere>(point3( 0.0, -100.5, -1.0), 100.0, material_ground));
+    world.Add(make_shared<Sphere>(point3( 0.0,    0.0, -1.0),   0.5, material_center));
+    world.Add(make_shared<Sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
+    world.Add(make_shared<Sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
+
 
     // Camera
 

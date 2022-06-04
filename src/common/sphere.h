@@ -7,9 +7,10 @@ class Sphere : public HittableObject
 {
     public:
         Sphere() = default;
-        Sphere(point3 centre, double r)
+        Sphere(point3 centre, double r, std::shared_ptr<Material> material)
         : m_centre(centre)
         , m_radius(r)
+        , m_material(material)
         {};
 
         virtual bool Hit(const Ray& r, double t_min, double t_max, HitRecord& rec) const override
@@ -40,6 +41,7 @@ class Sphere : public HittableObject
             rec.normal = (rec.p - m_centre) / m_radius;
             vec3 outwardNormal = (rec.p - m_centre) / m_radius;
             rec.setFaceNormal(r, outwardNormal);
+            rec.material = m_material;
 
             return true;
         }
@@ -48,5 +50,6 @@ class Sphere : public HittableObject
     private:
         point3 m_centre;
         double m_radius;
+        std::shared_ptr<Material> m_material;
 };
 #endif

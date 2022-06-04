@@ -2,6 +2,7 @@
 #define HITTABLE_H
 
 #include "ray.h"
+class Material;
 
 struct HitRecord
 {
@@ -9,7 +10,7 @@ struct HitRecord
     vec3 normal;
     double t;
     bool frontFace;
-
+    std::shared_ptr<Material> material;
     inline void setFaceNormal(const Ray& ray, const vec3& outwardNormal)
     {
         frontFace = dot(ray.GetDirection(), outwardNormal) < 0;
